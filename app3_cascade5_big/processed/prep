@@ -1,0 +1,2 @@
+  paste -d"\t"  ../InSilicoSize4-CascadeA_multifactorial.tsv  ../InSilicoSize4-CascadeA_multifactorial_perturbations.tsv |awk '{print $1"\t"$7"\t"$8"\t"$9"\t"$10}' | tail -n +2 > input.tsv
+  paste -d"\t" ../InSilicoSize4-CascadeA_multifactorial.tsv  ../InSilicoSize4-CascadeA_multifactorial_perturbations.tsv |awk '{print $2"\t"$3"\t"$4"\t"$5}' | tail -n +2 > target.tsv
