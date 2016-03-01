@@ -36,6 +36,11 @@ function GnwNet:pri_randomizeParam(v)
 end
 
 function GnwNet:pri_randomizeReaction(xReaction)
+  local xModifiers = xReaction:find("listOfModifiers")
+  if xModifiers == nil then -- skip for the genes with no modifier
+    return
+  end
+
   local xParamList = xReaction:find("kineticLaw"):find("listOfParameters")
 
   for k, v in pairs(xParamList) do
