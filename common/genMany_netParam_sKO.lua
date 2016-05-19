@@ -1,39 +1,26 @@
 require 'xml'
 local lfs = require 'lfs'
-require('GnwNet')
-require('KOExprMgr')
+local sbmlUtil = require('./sbmlUtil.lua')
+require('./GnwNetPerturb.lua')
+require('./KOExprMgr.lua')
 
-function genPerturbedNet(strNetMainFilename, seed)
-
-  local settings = { baseDir = currDir, 
-                     templateDir = currDir,
-                     xmlFilename = strNetMainFilename}
-
-  local pertNet = GnwNet.new(settings, seed)
-  pertNet:init()
-  pertNet:randomize()
-
-  return pertNet
-
-end
-
-function main(strNetMainFilename, nNets)
+function main(strNetMainFilename, nNets, taExprParams)
   --todo: assert file exists
 
   for seed=1, nNets do
-    local strNetCurrPerturbedFilename = genPerturbedNet(strNetMainFilename, seed)
-    local koExprMgr = KOExprMgr.new(strNetCurrPerturbedFilename)
+    local strNetCurrPerturbedFilename = sbmlUtil.genPerturbedNet(strNetMainFilename, seed)
+    local koExprMgr = KOExprMgr.new(strNetCurrPerturbedFilename, taExprParams)
+    koExprMgr:init()
 
-    while koExprMgr:HasMore()  do
+    while koExprMgr:hasMore()  do
       local currExpr = koExprMgr:getNextExpr()
       currExpr:run()
     end
 
-    koExprMgr:Aggregate()
-
+    koExprMgr:aggregate()
   end
 
 end
 
-local taExprParam = { nMinKO = 1, nMaxKO = 1 }
-main(arg[1], arg[2] or 1, taExprParam)
+local taExprParams = { nMinKO = 1, nMaxKO = 1 }
+main(arg[1], arg[2] or 1, taExprParams)
