@@ -1,0 +1,18 @@
+th ../common/genMany.lua myNet.xml 100
+
+genMany.lua:
+  netXml = loadXML($1)
+  nNets = $2
+  taExp = getKOExperiments(netXml)
+
+  for i=1, nNets do
+    local strBasePath = getPath(...)
+    local xmlBase = perturbNetParams(i, netXml)
+     
+      for key, koExpConfig in pairs(taKO) do
+        koExpConfig.run(koExpConfig, xmlBasePath)
+      end
+
+      taExp.keyLast.fuAggregateResults(strBasePath)
+      
+  end
