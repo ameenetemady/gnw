@@ -1,4 +1,6 @@
 require 'xml'
+require('./KOExpr.lua')
+
 local sbmlUtil = require("./sbmlUtil.lua")
 
 local KOExprMgr = torch.class('KOExprMgr')
@@ -28,7 +30,6 @@ function KOExprMgr:init()
       self.nTotalKOExpr = self.nTotalKOExpr + 1
     end
   end
-
 end
 
 function KOExprMgr:hasMore()

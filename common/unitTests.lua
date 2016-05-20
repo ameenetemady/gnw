@@ -6,6 +6,16 @@ local lfs = require 'lfs'
 local unitTests = {}
 local utSettings = { testDir = "appUT", baseDir= lfs.currentdir() }
 
+function wrapUT(fuUT, strName)
+  lfs.chdir(utSettings.testDir)
+  
+  fuUT()
+
+  print("PASS " .. strName)
+  lfs.chdir(utSettings.baseDir)
+end
+
+
 function unitTests.sbmlUtil_genPerturbedNet_t1()
     local strNetCurrPerturbedFilename = sbmlUtil.genPerturbedNet('feedforward1.xml', 1)
     assert(strNetCurrPerturbedFilename == "./d_1/feedforward1.xml", "unexpected result in genPerturbedNet_t1")
@@ -41,17 +51,17 @@ function unitTests.KOExprMgr_init_t1()
   koExprMgr:init()
 end
 
-function wrapUT(fuUT, strName)
-  lfs.chdir(utSettings.testDir)
-  
-  fuUT()
+function unitTests.KOExpr_run_E2ETest()
+  local taExprParams = { nMinKO = 1, nMaxKO = 1, dMultiFactorialStep=0.1, strGnwSettingsFilename = "settings.txt" }
+  local koExpr = KOExpr.new("feedforward1.xml", taExprParams, {"G6"})
+  print(koExpr)
+  koExpr:init()
 
-  print("PASS " .. strName)
-  lfs.chdir(utSettings.baseDir)
 end
 
 --wrapUT(unitTests.sbmlUtil_genPerturbedNet_t1, "sbmlUtil_genPerturbedNet_t1")
 --wrapUT(unitTests.sbmlUtil_getGeneNames_t1, "sbmlUtil_getGeneNames_t1")
 --wrapUT(unitTests.sbmlUtil_getTFs_t1, "sbmlUtil_getTFs_t1")
 --wrapUT(unitTests.sbmlUtil_getNetFromSbml_t1, "sbmlUtil_getNetFromSbml_t1")
-wrapUT(unitTests.KOExprMgr_init_t1, "KOExprMgr_init_t1")
+--wrapUT(unitTests.KOExprMgr_init_t1, "KOExprMgr_init_t1")
+wrapUT(unitTests.KOExpr_run_E2ETest, "KOExpr_run_E2ETest")
