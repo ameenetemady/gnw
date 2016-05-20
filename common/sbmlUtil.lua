@@ -51,6 +51,18 @@ do
     return taNet
   end
 
+  function sbmlUtil.doInplaceGeneKnockOut(strXmlFilename, taKOGenes)
+    local xRoot = xml.load(strXmlFilename)
+
+    for k, strGene in pairs(taKOGenes) do
+       local xReaction = xRoot:find("reaction", "id", strGene .. "_synthesis")
+       local xParamMax = xReaction:find("kineticLaw"):find("listOfParameters"):find("parameter", "id", "max")
+       xParamMax.value = 0.0
+    end
+
+    xRoot:save(strXmlFilename)
+  end
+
   function sbmlUtil.getTFs(strXmlFilename, taNet)
     if taNet == nil then
       taNet = sbmlUtil.getNetFromSbml(strXmlFilename)

@@ -19,6 +19,8 @@ function KOExprMgr:init()
 
   self.taKOExperiments = {}
   local currKOExpr = KOExpr.new(self.strXmlFilename, self.taExprParams, {})
+  currKOExpr:init()
+
   table.insert(self.taKOExperiments, currKOExpr)
   self.nTotalKOExpr = 1
 
@@ -26,6 +28,8 @@ function KOExprMgr:init()
   for strGene, taTFs in pairs(self.taNet) do
     if type(taTFs) == "table" then
       local currKOExpr = KOExpr.new(self.strXmlFilename, self.taExprParams, {strGene})
+      print(currKOExpr)
+      currKOExpr:init()
       table.insert(self.taKOExperiments, currKOExpr)
       self.nTotalKOExpr = self.nTotalKOExpr + 1
     end

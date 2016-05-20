@@ -44,8 +44,12 @@ function unitTests.sbmlUtil_getNetFromSbml_t1()
   print(taNet)
 end
 
+function unitTests.sbmlUtil_doInplaceGeneKnockOut_t1()
+  sbmlUtil.doInplaceGeneKnockOut("feedforward1.xml", {"G7"})
+end
+
 function unitTests.KOExprMgr_init_t1()
-  local taExprParams = { nMinKO = 1, nMaxKO = 1, dMultiFactorialStep=0.1 }
+  local taExprParams = { nMinKO = 1, nMaxKO = 1, dMultiFactorialStep=0.1, strGnwSettingsFilename = "settings.txt" }
 
   local koExprMgr = KOExprMgr.new("feedforward1.xml", taExprParams)
   koExprMgr:init()
@@ -56,12 +60,12 @@ function unitTests.KOExpr_run_E2ETest()
   local koExpr = KOExpr.new("feedforward1.xml", taExprParams, {"G6"})
   print(koExpr)
   koExpr:init()
-
 end
 
 --wrapUT(unitTests.sbmlUtil_genPerturbedNet_t1, "sbmlUtil_genPerturbedNet_t1")
 --wrapUT(unitTests.sbmlUtil_getGeneNames_t1, "sbmlUtil_getGeneNames_t1")
 --wrapUT(unitTests.sbmlUtil_getTFs_t1, "sbmlUtil_getTFs_t1")
 --wrapUT(unitTests.sbmlUtil_getNetFromSbml_t1, "sbmlUtil_getNetFromSbml_t1")
---wrapUT(unitTests.KOExprMgr_init_t1, "KOExprMgr_init_t1")
-wrapUT(unitTests.KOExpr_run_E2ETest, "KOExpr_run_E2ETest")
+--wrapUT(unitTests.sbmlUtil_doInplaceGeneKnockOut_t1, "sbmlUtil_doInplaceGeneKnockOut_t1")
+wrapUT(unitTests.KOExprMgr_init_t1, "KOExprMgr_init_t1")
+--wrapUT(unitTests.KOExpr_run_E2ETest, "KOExpr_run_E2ETest")

@@ -12,7 +12,7 @@ function KOExpr:__init(strParentXmlFilename, taExprParams, taKOGenes)
 end
 
 function KOExpr:getExprName()
-  if taKOGenes == nil or type(taKOGenes) ~= "table" or table.getn(taKOGenes) == 0 then
+  if self.taKOGenes == nil or type(self.taKOGenes) ~= "table" or table.getn(self.taKOGenes) == 0 then
     return "default"
   end
 
@@ -23,20 +23,24 @@ function KOExpr:init()
   -- create dir
   self.strParentDir = fsUtil.getDirname(self.strParentXmlFilename)
   self.strExprDir = string.format("%s/%s", self.strParentDir, self:getExprName())
+  print("mkdir: " .. self.strExprDir)
   lfs.mkdir(self.strExprDir)
 
   -- copy base files
-  self.strExprXmlFilename = string.format("cp %s %s", self.strParentXmlFilename, self.strExprDir)
-  self.strExprGnwSettingsFilename = string.format("cp %s %s", self.taExprParams.strGnwSettingsFilename, self.strExprDir)
-  os.execute(self.strExprXmlFilename)
-  os.execute(self.strExprGnwSettingsFilename)
+  local command = string.format("cp %s %s", self.strParentXmlFilename, self.strExprDir)
+  print("running: " .. command)
+  assert(os.execute(command), "command failed!")
+  command = string.format("cp %s %s", self.taExprParams.strGnwSettingsFilename, self.strExprDir)
+  print("running: " .. command)
+  assert(os.execute(command), "command failed!")
+  self.strExprXmlFilename = string.format("%s/%s", self.strExprDir, fsUtil.getFilename(self.strParentXmlFilename))
+  self.strExprGnwSettingsFilename = string.format("%s/%s", self.strExprDir, self.taExprParams.strGnwSettingsFilename)
 
-  -- KnockOut on sbml
-  sbmlUtil.doInplaceGeneKnockOut(self.strExprXmlFilename, self.taKOGenes) -- todo: implement
+  -- knockOut on sbml
+  sbmlUtil.doInplaceGeneKnockOut(self.strExprXmlFilename, self.taKOGenes)
 
-  -- generate multifactorial perturbations on TFs
-  --todo: implement
-
+--  generate multifactorial perturbations on TFs
+--  sbmlUtil.genMultifactorialPert(self.strExprDir, self.strExprXmlFilename) todo: implement
 end
 
 function KOExpr:__tostring()
