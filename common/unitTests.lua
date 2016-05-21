@@ -1,5 +1,7 @@
 require('./GnwNetPerturb.lua')
 require('./KOExprMgr.lua')
+require('../../mygithub/MyCommon/PermutationGenerator.lua')
+
 local sbmlUtil = require('./sbmlUtil.lua')
 local lfs = require 'lfs'
 
@@ -48,6 +50,12 @@ function unitTests.sbmlUtil_doInplaceGeneKnockOut_t1()
   sbmlUtil.doInplaceGeneKnockOut("feedforward1.xml", {"G7"})
 end
 
+function unitTests.sbmlUtil_getMultifactorialPerts_t1()
+    local taExprParams = { nMinKO = 1, nMaxKO = 1, dMultiFactorialStep=0.1, strGnwSettingsFilename = "settings.txt" }
+    local strPerts = sbmlUtil.getMultifactorialPerts(".", "feedforward1.xml", taExprParams)
+    print(strPerts)
+end
+
 function unitTests.KOExprMgr_init_t1()
   local taExprParams = { nMinKO = 1, nMaxKO = 1, dMultiFactorialStep=0.1, strGnwSettingsFilename = "settings.txt" }
 
@@ -67,5 +75,6 @@ end
 --wrapUT(unitTests.sbmlUtil_getTFs_t1, "sbmlUtil_getTFs_t1")
 --wrapUT(unitTests.sbmlUtil_getNetFromSbml_t1, "sbmlUtil_getNetFromSbml_t1")
 --wrapUT(unitTests.sbmlUtil_doInplaceGeneKnockOut_t1, "sbmlUtil_doInplaceGeneKnockOut_t1")
-wrapUT(unitTests.KOExprMgr_init_t1, "KOExprMgr_init_t1")
+--wrapUT(unitTests.KOExprMgr_init_t1, "KOExprMgr_init_t1")
 --wrapUT(unitTests.KOExpr_run_E2ETest, "KOExpr_run_E2ETest")
+--wrapUT(unitTests.sbmlUtil_getMultifactorialPerts_t1, "sbmlUtil_getMultifactorialPerts_t1")

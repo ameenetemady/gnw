@@ -1,3 +1,5 @@
+local myUtil = require('../../mygithub/MyCommon/util.lua')
+
 local sbmlUtil = {}
 
 do
@@ -49,6 +51,46 @@ do
     end
 
     return taNet
+  end
+
+  function sbmlUtil.getMultifactorialPerts(strXmlFilePath, taExprParams)
+    local taNet = sbmlUtil.getNetFromSbml(strXmlFilePath)
+    local taGenes = sbmlUtil.getGeneNames(strXmlFilePath)
+
+    -- initialize
+    local nGenes = table.getn(taGenes)
+    local taPertMins = {}
+    local taPertMaxs = {}
+    local nLevels = 1/(taExprParams.dMultiFactorialStep)
+
+    -- set permutation boundaries
+    for i=1, nGenes do
+      local strGene = taGenes[i]
+      if taNet[strGene] == "TF" then
+        taPertMins[i] = -nLevels
+        taPertMaxs[i] = nLevels
+      else
+        taPertMins[i] = 0
+        taPertMaxs[i] = 0
+      end
+    end
+    
+    -- permute
+    local permutGen = PermutationGenerator(taPertMins, taPertMaxs)
+    local tePerm = permutGen:getNext()
+    local taAll = {}
+    while tePerm ~= nil do
+     table.insert(taAll, tePerm:clone())
+     tePerm = permutGen:getNext()
+    end
+
+    -- save
+    local teAll = myUtil.getTensorFromTableOfTensors(taAll)
+    teAll:mul(taExprParams.dMultiFactorialStep)
+    local strContent = myUtil.getCsvStringFrom2dTensor(teAll, "\t")
+    local strHeader = table.concat(taGenes, "\t")
+
+    return string.format("%s\n%s", strHeader, strContent)
   end
 
   function sbmlUtil.doInplaceGeneKnockOut(strXmlFilename, taKOGenes)

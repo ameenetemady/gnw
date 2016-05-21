@@ -28,19 +28,21 @@ function KOExpr:init()
 
   -- copy base files
   local command = string.format("cp %s %s", self.strParentXmlFilename, self.strExprDir)
-  print("running: " .. command)
   assert(os.execute(command), "command failed!")
   command = string.format("cp %s %s", self.taExprParams.strGnwSettingsFilename, self.strExprDir)
-  print("running: " .. command)
   assert(os.execute(command), "command failed!")
   self.strExprXmlFilename = string.format("%s/%s", self.strExprDir, fsUtil.getFilename(self.strParentXmlFilename))
   self.strExprGnwSettingsFilename = string.format("%s/%s", self.strExprDir, self.taExprParams.strGnwSettingsFilename)
-
+  self.strPertFilename = string.format("%s/%s_multifactorial_perturbations.tsv", 
+                                       self.strExprDir, 
+                                       fsUtil.getFilenameNoSuffix(self.strParentXmlFilename, ".xml"))
+                                     
   -- knockOut on sbml
   sbmlUtil.doInplaceGeneKnockOut(self.strExprXmlFilename, self.taKOGenes)
 
---  generate multifactorial perturbations on TFs
---  sbmlUtil.genMultifactorialPert(self.strExprDir, self.strExprXmlFilename) todo: implement
+  -- generate multifactorial perturbations on TFs
+  local strPerts = sbmlUtil.getMultifactorialPerts(self.strExprXmlFilename, self.taExprParams)
+  fsUtil.writeStrToFile(strPerts, self.strPertFilename)
 end
 
 function KOExpr:__tostring()
