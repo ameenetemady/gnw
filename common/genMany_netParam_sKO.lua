@@ -14,7 +14,7 @@ function main(strNetMainFilename, nNets, taExprParams)
     koExprMgr:init()
 
     while koExprMgr:hasMore()  do
-      local currExpr = koExprMgr:getNextExpr()
+      local currExpr = koExprMgr:nextExpr()
       currExpr:run()
     end
 

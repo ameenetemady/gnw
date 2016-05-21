@@ -27,12 +27,20 @@ function KOExpr:init()
   lfs.mkdir(self.strExprDir)
 
   -- copy base files
-  local command = string.format("cp %s %s", self.strParentXmlFilename, self.strExprDir)
+  local command = nil
+  command = string.format("cp %s %s", self.strParentXmlFilename, self.strExprDir)
   assert(os.execute(command), "command failed!")
+
   command = string.format("cp %s %s", self.taExprParams.strGnwSettingsFilename, self.strExprDir)
   assert(os.execute(command), "command failed!")
+
+  command = string.format("cp %s %s", "run.sh", self.strExprDir)
+  assert(os.execute(command), "command failed!")
+
+
   self.strExprXmlFilename = string.format("%s/%s", self.strExprDir, fsUtil.getFilename(self.strParentXmlFilename))
   self.strExprGnwSettingsFilename = string.format("%s/%s", self.strExprDir, self.taExprParams.strGnwSettingsFilename)
+  self.strRunScripFilename = "run.sh"
   self.strPertFilename = string.format("%s/%s_multifactorial_perturbations.tsv", 
                                        self.strExprDir, 
                                        fsUtil.getFilenameNoSuffix(self.strParentXmlFilename, ".xml"))
@@ -43,6 +51,16 @@ function KOExpr:init()
   -- generate multifactorial perturbations on TFs
   local strPerts = sbmlUtil.getMultifactorialPerts(self.strExprXmlFilename, self.taExprParams)
   fsUtil.writeStrToFile(strPerts, self.strPertFilename)
+end
+
+function KOExpr:run()
+  local strOrigDir = lfs.currentdir()
+  lfs.chdir(self.strExprDir)
+
+  local command = string.format("./%s %s", self.strRunScripFilename, fsUtil.getFilename(self.strParentXmlFilename))
+  assert(os.execute(command), "command failed!")
+
+  lfs.chdir(strOrigDir)
 end
 
 function KOExpr:__tostring()

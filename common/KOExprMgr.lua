@@ -37,15 +37,12 @@ function KOExprMgr:init()
 end
 
 function KOExprMgr:hasMore()
-
+  return self.nLastExprId < self.nTotalKOExpr
 end
 
-function KOExprMgr:getNextExpr()
-
-end
-
-function KOExprMgr:run()
-
+function KOExprMgr:nextExpr()
+  self.nLastExprId = self.nLastExprId + 1
+  return self.taKOExperiments[self.nLastExprId]
 end
 
 function KOExprMgr:aggregate()
