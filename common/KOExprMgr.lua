@@ -1,7 +1,9 @@
 require 'xml'
 require('./KOExpr.lua')
 
-local sbmlUtil = require("./sbmlUtil.lua")
+local myUtil = myUtil or require('../../mygithub/MyCommon/util.lua')
+local sbmlUtil = sbmlUtil or require("./sbmlUtil.lua")
+local fsUtil = fsUtil or require("./fsUtil.lua")
 
 local KOExprMgr = torch.class('KOExprMgr')
 
@@ -45,13 +47,12 @@ function KOExprMgr:nextExpr()
   return self.taKOExperiments[self.nLastExprId]
 end
 
-function KOExprMgr:pri_getAggregated_KO()
+function KOExprMgr:pri_aggr(fuGet)
   local teAggr = nil
 
-  --Aggregate
   for i=1, self.nTotalKOExpr do
     local currExpr = self.taKOExperiments[i]
-    local teCurr = currExpr:getProcessed_KO()
+    local teCurr = fuGet(currExpr)
 
     if teAggr == nil then
       teAggr = teCurr
@@ -60,11 +61,17 @@ function KOExprMgr:pri_getAggregated_KO()
     end
   end
 
+  return teAggr
+end
+
+function KOExprMgr:pri_getAggregated_KO()
+  local teAggr = self:pri_aggr(function(currExpr)  return currExpr:getProcessed_KO() end)
+
   --Create Header
   local taNonTFs={}
   for strGene, taTFs in pairs(self.taNet) do
     if taTFs ~= "TF" then
-      table.insert(taNonTfs, strGene)
+      table.insert(taNonTFs, strGene)
     end
   end
 
@@ -76,19 +83,38 @@ function KOExprMgr:pri_getAggregated_KO()
 end
 
 function KOExprMgr:pri_getAggregated_TF()
+  -- read the file into tensor
+  local teAggr = self:pri_aggr(function(currExpr)  return currExpr:getProcessed_TF() end)
+  
+  -- extract the TF columns
 
+  -- Create Header
+  --
+  -- Prepare to Return
 end
 
 function KOExprMgr:pri_getAggregated_NonTF()
 
 end
 
+function KOExprMgr:getTaAggrFilenames()
+  local strDir = fsUtil.getDirname(self.strXmlFilename)
+  local taRes = { strKO = string.format("%s/processed_KO.tsv", strDir),
+                  strTFs = string.format("%s/processed_TFs.tsv", strDir),
+                  strNonTFs = string.format("%s/processed_NonTFs.tsv", strDir)}
+
+  return taRes
+end
+
 function KOExprMgr:aggregate()
+  self.taAggrFilenames = self:getTaAggrFilenames()
+
   local strAggrKO = self:pri_getAggregated_KO()
-  print(strAggrKO)
-  --todo implement, save
+  fsUtil.writeStrToFile(strAggrKO, self.taAggrFilenames.strKO)
 
   local strAggrTF = self:pri_getAggregated_TF()
+  fsUtil.writeStrToFile(strAggrTF, self.taAggrFilenames.strTFs)
 
   local strAggrNonTF = self:pri_getAggregated_NonTF()
+  fsUtil.writeStrToFile(strAggrNonTF, self.taAggrFilenames.strNonTFs)
 end

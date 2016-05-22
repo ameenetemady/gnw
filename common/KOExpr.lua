@@ -2,6 +2,7 @@ require 'xml'
 local lfs = require 'lfs'
 local fsUtil = require('./fsUtil.lua')
 local sbmlUtil = require('./sbmlUtil.lua')
+local myUtil = myUtil or require('../../mygithub/MyCommon/util.lua')
 
 local KOExpr = torch.class('KOExpr')
 
@@ -44,6 +45,11 @@ function KOExpr:init()
   self.strPertFilename = string.format("%s/%s_multifactorial_perturbations.tsv", 
                                        self.strExprDir, 
                                        fsUtil.getFilenameNoSuffix(self.strParentXmlFilename, ".xml"))
+
+  self.strTargetFilename = string.format("%s/%s_multifactorial.tsv", 
+                                       self.strExprDir, 
+                                       fsUtil.getFilenameNoSuffix(self.strParentXmlFilename, ".xml"))
+
                                      
   -- knockOut on sbml
   sbmlUtil.doInplaceGeneKnockOut(self.strExprXmlFilename, self.taKOGenes)
@@ -63,8 +69,32 @@ function KOExpr:run()
   lfs.chdir(strOrigDir)
 end
 
+function KOExpr:pri_getKOVector()
+  local taGenes = sbmlUtil.getNonTFs(self.strParentXmlFilename)
+  local nGenes = table.getn(taGenes)
+  local teRes = torch.Tensor(1, nGenes)
+
+  for i=1, nGenes do
+    if myUtil.isInTaValues(taGenes[i], self.taKOGenes) then
+      teRes[1][i] = 0
+    else
+      teRes[1][i] = 1
+    end
+  end
+
+  return teRes
+end
+
 function KOExpr:getProcessed_KO()
-  --todo: continue implement here ...
+  local nRecords = myUtil.getNumLines(self.strTargetFilename) - 1
+  local teKOVector = self:pri_getKOVector()
+  local teRes = torch.repeatTensor(teKOVector, nRecords, 1)
+
+  return teRes
+end
+
+function KOExpr:getProcessed_TF()
+
 end
 
 function KOExpr:__tostring()

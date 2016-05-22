@@ -1,4 +1,4 @@
-local myUtil = require('../../mygithub/MyCommon/util.lua')
+local myUtil = myUtil or require('../../mygithub/MyCommon/util.lua')
 
 local sbmlUtil = {}
 
@@ -109,8 +109,33 @@ do
     if taNet == nil then
       taNet = sbmlUtil.getNetFromSbml(strXmlFilename)
     end
+    
+    local taRes = {}
+    for k, v in pairs(taNet) do
+      if v == "TF" then
+        table.insert(taRes, k)
+      end
+    end
 
+    return taRes
   end
+
+
+  function sbmlUtil.getNonTFs(strXmlFilename, taNet)
+    if taNet == nil then
+      taNet = sbmlUtil.getNetFromSbml(strXmlFilename)
+    end
+    
+    local taRes = {}
+    for k, v in pairs(taNet) do
+      if v ~= "TF" then
+        table.insert(taRes, k)
+      end
+    end
+
+    return taRes
+  end
+
 
   return sbmlUtil
 end
