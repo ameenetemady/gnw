@@ -26,6 +26,8 @@ do
       end
     end
 
+    table.sort(taGenes)
+
     return taGenes
   end
 
@@ -117,6 +119,7 @@ do
       end
     end
 
+    table.sort(taRes)
     return taRes
   end
 
@@ -133,6 +136,7 @@ do
       end
     end
 
+    table.sort(taRes)
     return taRes
   end
 

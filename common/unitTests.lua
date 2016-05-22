@@ -69,12 +69,11 @@ function unitTests.KOExprMgr_E2E_t1()
   local koExprMgr = KOExprMgr.new("feedforward1.xml", taExprParams)
   koExprMgr:init()
 
-  --[[
   while koExprMgr:hasMore()  do
     local currExpr = koExprMgr:nextExpr()
     currExpr:run()
   end
-  --]]
+
   koExprMgr:aggregate()
 end
 

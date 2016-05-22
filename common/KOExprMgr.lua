@@ -18,6 +18,7 @@ end
 function KOExprMgr:init()
   -- read the xml file to extract gene names and setup the experiments
   self.taNet = sbmlUtil.getNetFromSbml(self.strXmlFilename)
+  self.taNonTFs = sbmlUtil.getNonTFs(self.strXmlFilename, self.taNet)
 
   self.taKOExperiments = {}
   local currKOExpr = KOExpr.new(self.strXmlFilename, self.taExprParams, {})
@@ -27,15 +28,14 @@ function KOExprMgr:init()
   self.nTotalKOExpr = 1
 
   -- Single KO only:
-  for strGene, taTFs in pairs(self.taNet) do
-    if type(taTFs) == "table" then
+  for k, strGene in pairs(self.taNonTFs) do
       local currKOExpr = KOExpr.new(self.strXmlFilename, self.taExprParams, {strGene})
       print(currKOExpr)
       currKOExpr:init()
       table.insert(self.taKOExperiments, currKOExpr)
       self.nTotalKOExpr = self.nTotalKOExpr + 1
-    end
   end
+
 end
 
 function KOExprMgr:hasMore()
@@ -68,13 +68,8 @@ function KOExprMgr:pri_getAggregated_KO()
   local teAggr = self:pri_aggr(function(currExpr)  return currExpr:getProcessed_KO() end)
 
   --Create Header
-  local taNonTFs={}
-  for strGene, taTFs in pairs(self.taNet) do
-    if taTFs ~= "TF" then
-      table.insert(taNonTFs, strGene)
-    end
-  end
-
+  local taNonTFs = sbmlUtil.getNonTFs(self.strXmlFilename)
+ 
   --Prepare to Return
   local strHeader = table.concat(taNonTFs, "\t")
   local strContent = myUtil.getCsvStringFrom2dTensor(teAggr, "\t")
