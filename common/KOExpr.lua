@@ -63,6 +63,10 @@ function KOExpr:run()
   lfs.chdir(strOrigDir)
 end
 
+function KOExpr:getProcessed_KO()
+  --todo: continue implement here ...
+end
+
 function KOExpr:__tostring()
   local str = "file:" .. self.strParentXmlFilename .. ", "
   
