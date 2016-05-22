@@ -3,6 +3,7 @@ local lfs = require 'lfs'
 local fsUtil = require('./fsUtil.lua')
 local sbmlUtil = require('./sbmlUtil.lua')
 local myUtil = myUtil or require('../../mygithub/MyCommon/util.lua')
+local dataLoad = dataLoad or require('../../mygithub/MyCommon/dataLoad.lua')
 
 local KOExpr = torch.class('KOExpr')
 
@@ -70,12 +71,12 @@ function KOExpr:run()
 end
 
 function KOExpr:pri_getKOVector()
-  local taGenes = sbmlUtil.getNonTFs(self.strParentXmlFilename)
-  local nGenes = table.getn(taGenes)
-  local teRes = torch.Tensor(1, nGenes)
+  local taNonTFs= sbmlUtil.getNonTFs(self.strParentXmlFilename)
+  local nNonTFs = table.getn(taNonTFs)
+  local teRes = torch.Tensor(1, nNonTFs)
 
-  for i=1, nGenes do
-    if myUtil.isInTaValues(taGenes[i], self.taKOGenes) then
+  for i=1, nNonTFs do
+    if myUtil.isInTaValues(taNonTFs[i], self.taKOGenes) then
       teRes[1][i] = 0
     else
       teRes[1][i] = 1
@@ -94,7 +95,34 @@ function KOExpr:getProcessed_KO()
 end
 
 function KOExpr:getProcessed_TF()
+  local taTFs = sbmlUtil.getTFs(self.strParentXmlFilename)
+  local taCols = {}
+  local nCols = 0
+  for k, v in pairs(taTFs) do
+    taCols[v]=true
+    nCols = nCols + 1
+  end
 
+  local taLoadParam = { strFilename = self.strTargetFilename, nCols = nCols, taCols = taCols, isHeader = true }
+  local teData = dataLoad.loadTensorFromTsv(taLoadParam)
+
+  return teData
+end
+
+
+function KOExpr:getProcessed_NonTF()
+  local taNonTFs = sbmlUtil.getNonTFs(self.strParentXmlFilename)
+  local taCols = {}
+  local nCols = 0
+  for k, v in pairs(taNonTFs) do
+    taCols[v]=true
+    nCols = nCols + 1
+  end
+
+  local taLoadParam = { strFilename = self.strTargetFilename, nCols = nCols, taCols = taCols, isHeader = true }
+  local teData = dataLoad.loadTensorFromTsv(taLoadParam)
+
+  return teData
 end
 
 function KOExpr:__tostring()

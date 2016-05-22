@@ -86,15 +86,28 @@ function KOExprMgr:pri_getAggregated_TF()
   -- read the file into tensor
   local teAggr = self:pri_aggr(function(currExpr)  return currExpr:getProcessed_TF() end)
   
-  -- extract the TF columns
-
   -- Create Header
-  --
+  local taTFs = sbmlUtil.getTFs(self.strXmlFilename)
+ 
   -- Prepare to Return
+  local strHeader = table.concat(taTFs, "\t")
+  local strContent = myUtil.getCsvStringFrom2dTensor(teAggr, "\t")
+
+  return string.format("%s\n%s", strHeader, strContent)
 end
 
 function KOExprMgr:pri_getAggregated_NonTF()
+  -- read the file into tensor
+  local teAggr = self:pri_aggr(function(currExpr)  return currExpr:getProcessed_NonTF() end)
+  
+  -- Create Header
+  local taNonTFs = sbmlUtil.getNonTFs(self.strXmlFilename)
+ 
+  -- Prepare to Return
+  local strHeader = table.concat(taNonTFs, "\t")
+  local strContent = myUtil.getCsvStringFrom2dTensor(teAggr, "\t")
 
+  return string.format("%s\n%s", strHeader, strContent)
 end
 
 function KOExprMgr:getTaAggrFilenames()
