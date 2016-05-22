@@ -63,6 +63,21 @@ function unitTests.KOExprMgr_init_t1()
   koExprMgr:init()
 end
 
+function unitTests.KOExprMgr_E2E_t1()
+  local taExprParams = { nMinKO = 1, nMaxKO = 1, dMultiFactorialStep=0.1, strGnwSettingsFilename = "settings.txt" }
+
+  local koExprMgr = KOExprMgr.new("feedforward1.xml", taExprParams)
+  koExprMgr:init()
+
+  --[[
+  while koExprMgr:hasMore()  do
+    local currExpr = koExprMgr:nextExpr()
+    currExpr:run()
+  end
+  --]]
+  koExprMgr:aggregate()
+end
+
 function unitTests.KOExpr_run_E2ETest()
   local taExprParams = { nMinKO = 1, nMaxKO = 1, dMultiFactorialStep=0.1, strGnwSettingsFilename = "settings.txt" }
   local koExpr = KOExpr.new("feedforward1.xml", taExprParams, {"G6"})
@@ -76,5 +91,6 @@ end
 --wrapUT(unitTests.sbmlUtil_getNetFromSbml_t1, "sbmlUtil_getNetFromSbml_t1")
 --wrapUT(unitTests.sbmlUtil_doInplaceGeneKnockOut_t1, "sbmlUtil_doInplaceGeneKnockOut_t1")
 --wrapUT(unitTests.KOExprMgr_init_t1, "KOExprMgr_init_t1")
+wrapUT(unitTests.KOExprMgr_E2E_t1, "KOExprMgr_init_t1")
 --wrapUT(unitTests.KOExpr_run_E2ETest, "KOExpr_run_E2ETest")
 --wrapUT(unitTests.sbmlUtil_getMultifactorialPerts_t1, "sbmlUtil_getMultifactorialPerts_t1")
