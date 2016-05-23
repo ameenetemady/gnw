@@ -96,14 +96,8 @@ end
 
 function KOExpr:getProcessed_TF()
   local taTFs = sbmlUtil.getTFs(self.strParentXmlFilename)
-  local taCols = {}
-  local nCols = 0
-  for k, v in pairs(taTFs) do
-    taCols[v]=true
-    nCols = nCols + 1
-  end
 
-  local taLoadParam = { strFilename = self.strTargetFilename, nCols = nCols, taCols = taCols, isHeader = true }
+  local taLoadParam = { strFilename = self.strTargetFilename, nCols = table.getn(taTFs), taCols = taTFs, isHeader = true }
   local teData = dataLoad.loadTensorFromTsv(taLoadParam)
 
   return teData
@@ -112,14 +106,8 @@ end
 
 function KOExpr:getProcessed_NonTF()
   local taNonTFs = sbmlUtil.getNonTFs(self.strParentXmlFilename)
-  local taCols = {}
-  local nCols = 0
-  for k, v in pairs(taNonTFs) do
-    taCols[v]=true
-    nCols = nCols + 1
-  end
 
-  local taLoadParam = { strFilename = self.strTargetFilename, nCols = nCols, taCols = taCols, isHeader = true }
+  local taLoadParam = { strFilename = self.strTargetFilename, nCols = table.getn(taNonTFs), taCols = taNonTFs, isHeader = true }
   local teData = dataLoad.loadTensorFromTsv(taLoadParam)
 
   return teData
