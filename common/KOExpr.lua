@@ -51,6 +51,10 @@ function KOExpr:init()
                                        self.strExprDir, 
                                        fsUtil.getFilenameNoSuffix(self.strParentXmlFilename, ".xml"))
 
+  self.strTargetFilenameNoNoise = string.format("%s/%s_noexpnoise_multifactorial.tsv", 
+                                       self.strExprDir, 
+                                       fsUtil.getFilenameNoSuffix(self.strParentXmlFilename, ".xml"))
+
                                      
   -- knockOut on sbml
   sbmlUtil.doInplaceGeneKnockOut(self.strExprXmlFilename, self.taKOGenes)
@@ -94,20 +98,22 @@ function KOExpr:getProcessed_KO()
   return teRes
 end
 
-function KOExpr:getProcessed_TF()
+function KOExpr:getProcessed_TF(isNoNoise)
   local taTFs = sbmlUtil.getTFs(self.strParentXmlFilename)
 
-  local taLoadParam = { strFilename = self.strTargetFilename, nCols = table.getn(taTFs), taCols = taTFs, isHeader = true }
+  local taLoadParam = { strFilename = isNoNoise and self.strTargetFilenameNoNoise or self.strTargetFilename, 
+                        nCols = table.getn(taTFs), taCols = taTFs, isHeader = true }
   local teData = dataLoad.loadTensorFromTsv(taLoadParam)
 
   return teData
 end
 
 
-function KOExpr:getProcessed_NonTF()
+function KOExpr:getProcessed_NonTF(isNoNoise)
   local taNonTFs = sbmlUtil.getNonTFs(self.strParentXmlFilename)
 
-  local taLoadParam = { strFilename = self.strTargetFilename, nCols = table.getn(taNonTFs), taCols = taNonTFs, isHeader = true }
+  local taLoadParam = { strFilename = isNoNoise and self.strTargetFilenameNoNoise or self.strTargetFilename, 
+                        nCols = table.getn(taNonTFs), taCols = taNonTFs, isHeader = true }
   local teData = dataLoad.loadTensorFromTsv(taLoadParam)
 
   return teData

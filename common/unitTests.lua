@@ -71,7 +71,7 @@ function unitTests.KOExprMgr_E2E_t1()
 
   while koExprMgr:hasMore()  do
     local currExpr = koExprMgr:nextExpr()
-    currExpr:run()
+--    currExpr:run()
   end
 
   koExprMgr:aggregate()

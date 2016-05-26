@@ -77,9 +77,9 @@ function KOExprMgr:pri_getAggregated_KO()
  return string.format("%s\n%s", strHeader, strContent)
 end
 
-function KOExprMgr:pri_getAggregated_TF()
+function KOExprMgr:pri_getAggregated_TF(isNoNoise)
   -- read the file into tensor
-  local teAggr = self:pri_aggr(function(currExpr)  return currExpr:getProcessed_TF() end)
+  local teAggr = self:pri_aggr(function(currExpr)  return currExpr:getProcessed_TF(isNoNoise) end)
   
   -- Create Header
   local taTFs = sbmlUtil.getTFs(self.strXmlFilename)
@@ -91,9 +91,9 @@ function KOExprMgr:pri_getAggregated_TF()
   return string.format("%s\n%s", strHeader, strContent)
 end
 
-function KOExprMgr:pri_getAggregated_NonTF()
+function KOExprMgr:pri_getAggregated_NonTF(isNoNoise)
   -- read the file into tensor
-  local teAggr = self:pri_aggr(function(currExpr)  return currExpr:getProcessed_NonTF() end)
+  local teAggr = self:pri_aggr(function(currExpr)  return currExpr:getProcessed_NonTF(isNoNoise) end)
   
   -- Create Header
   local taNonTFs = sbmlUtil.getNonTFs(self.strXmlFilename)
@@ -109,7 +109,10 @@ function KOExprMgr:getTaAggrFilenames()
   local strDir = fsUtil.getDirname(self.strXmlFilename)
   local taRes = { strKO = string.format("%s/processed_KO.tsv", strDir),
                   strTFs = string.format("%s/processed_TFs.tsv", strDir),
-                  strNonTFs = string.format("%s/processed_NonTFs.tsv", strDir)}
+                  strTFsNoNoise = string.format("%s/processed_TFsNoNoise.tsv", strDir),
+                  strNonTFs = string.format("%s/processed_NonTFs.tsv", strDir),
+                  strNonTFsNoNoise = string.format("%s/processed_NonTFsNoNoise.tsv", strDir)
+                }
 
   return taRes
 end
@@ -120,9 +123,17 @@ function KOExprMgr:aggregate()
   local strAggrKO = self:pri_getAggregated_KO()
   fsUtil.writeStrToFile(strAggrKO, self.taAggrFilenames.strKO)
 
-  local strAggrTF = self:pri_getAggregated_TF()
+  local strAggrTF = self:pri_getAggregated_TF(false)
   fsUtil.writeStrToFile(strAggrTF, self.taAggrFilenames.strTFs)
 
-  local strAggrNonTF = self:pri_getAggregated_NonTF()
+  local strAggrTFNoNoise = self:pri_getAggregated_TF(true)
+  fsUtil.writeStrToFile(strAggrTFNoNoise, self.taAggrFilenames.strTFsNoNoise)
+
+
+  local strAggrNonTF = self:pri_getAggregated_NonTF(false)
   fsUtil.writeStrToFile(strAggrNonTF, self.taAggrFilenames.strNonTFs)
+
+  local strAggrNonTFNoNoise = self:pri_getAggregated_NonTF(true)
+  fsUtil.writeStrToFile(strAggrNonTFNoNoise, self.taAggrFilenames.strNonTFsNoNoise)
+
 end
