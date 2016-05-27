@@ -22,10 +22,12 @@ end
 function GnwNetPerturb:pri_fgetMinMax(strId)
   local prefix = string.sub(strId, 1, 2)
 
-  if prefix == "a_" then
-    return false, 0, 1
+  if strId == "a_0" then
+    return false, 0.6, 1
+  elseif prefix == "a_" then
+    return false, 0, 0.4 
   elseif prefix == "k_" then
-    return false, 0, 1
+    return false, 0.4 , 1
   elseif prefix == "n_" then
     return false, 1, 7
   else
