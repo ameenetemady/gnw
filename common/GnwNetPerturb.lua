@@ -30,6 +30,8 @@ function GnwNetPerturb:pri_fgetMinMax(strId)
     return false, 0.4 , 1
   elseif prefix == "n_" then
     return false, 1, 7
+  elseif strId == "max" then
+    return false, 0.01, 0.5
   else
     return true 
   end

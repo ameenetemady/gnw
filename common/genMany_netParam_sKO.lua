@@ -22,6 +22,6 @@ function main(strNetMainFilename, nNets, taExprParams)
   end
 
 end
-
-local taExprParams = { nMinKO = 1, nMaxKO = 1, dMultiFactorialStep=0.1, strGnwSettingsFilename = "settings.txt" }
+-- arg1: xmlfile, arg2: number of random nets, arg3: step size
+local taExprParams = { nMinKO = 1, nMaxKO = 1, dMultiFactorialStep= arg[3] or 0.1, strGnwSettingsFilename = "settings.txt" }
 main(arg[1], arg[2] or 1, taExprParams)

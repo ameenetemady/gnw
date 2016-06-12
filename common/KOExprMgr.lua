@@ -64,45 +64,33 @@ function KOExprMgr:pri_aggr(fuGet)
   return teAggr
 end
 
-function KOExprMgr:pri_getAggregated_KO()
+function KOExprMgr:pri_saveAggregated_KO(strFilename)
   local teAggr = self:pri_aggr(function(currExpr)  return currExpr:getProcessed_KO() end)
 
   --Create Header
   local taNonTFs = sbmlUtil.getNonTFs(self.strXmlFilename)
- 
-  --Prepare to Return
-  local strHeader = table.concat(taNonTFs, "\t")
-  local strContent = myUtil.getCsvStringFrom2dTensor(teAggr, "\t")
 
- return string.format("%s\n%s", strHeader, strContent)
+  myUtil.saveTensorAndHeaderToCsvFile(teAggr, taNonTFs, strFilename)
 end
 
-function KOExprMgr:pri_getAggregated_TF(isNoNoise)
+function KOExprMgr:pri_saveAggregated_TF(isNoNoise, strFilename)
   -- read the file into tensor
   local teAggr = self:pri_aggr(function(currExpr)  return currExpr:getProcessed_TF(isNoNoise) end)
   
   -- Create Header
   local taTFs = sbmlUtil.getTFs(self.strXmlFilename)
  
-  -- Prepare to Return
-  local strHeader = table.concat(taTFs, "\t")
-  local strContent = myUtil.getCsvStringFrom2dTensor(teAggr, "\t")
-
-  return string.format("%s\n%s", strHeader, strContent)
+  myUtil.saveTensorAndHeaderToCsvFile(teAggr, taTFs, strFilename)
 end
 
-function KOExprMgr:pri_getAggregated_NonTF(isNoNoise)
+function KOExprMgr:pri_saveAggregated_NonTF(isNoNoise, strFilename)
   -- read the file into tensor
   local teAggr = self:pri_aggr(function(currExpr)  return currExpr:getProcessed_NonTF(isNoNoise) end)
   
   -- Create Header
   local taNonTFs = sbmlUtil.getNonTFs(self.strXmlFilename)
  
-  -- Prepare to Return
-  local strHeader = table.concat(taNonTFs, "\t")
-  local strContent = myUtil.getCsvStringFrom2dTensor(teAggr, "\t")
-
-  return string.format("%s\n%s", strHeader, strContent)
+  myUtil.saveTensorAndHeaderToCsvFile(teAggr, taNonTFs, strFilename)
 end
 
 function KOExprMgr:getTaAggrFilenames()
@@ -120,20 +108,14 @@ end
 function KOExprMgr:aggregate()
   self.taAggrFilenames = self:getTaAggrFilenames()
 
-  local strAggrKO = self:pri_getAggregated_KO()
-  fsUtil.writeStrToFile(strAggrKO, self.taAggrFilenames.strKO)
+  self:pri_saveAggregated_KO(self.taAggrFilenames.strKO)
 
-  local strAggrTF = self:pri_getAggregated_TF(false)
-  fsUtil.writeStrToFile(strAggrTF, self.taAggrFilenames.strTFs)
+  self:pri_saveAggregated_TF(false, self.taAggrFilenames.strTFs)
 
-  local strAggrTFNoNoise = self:pri_getAggregated_TF(true)
-  fsUtil.writeStrToFile(strAggrTFNoNoise, self.taAggrFilenames.strTFsNoNoise)
+  self:pri_saveAggregated_TF(true, self.taAggrFilenames.strTFsNoNoise)
 
+  self:pri_saveAggregated_NonTF(false, self.taAggrFilenames.strNonTFs)
 
-  local strAggrNonTF = self:pri_getAggregated_NonTF(false)
-  fsUtil.writeStrToFile(strAggrNonTF, self.taAggrFilenames.strNonTFs)
-
-  local strAggrNonTFNoNoise = self:pri_getAggregated_NonTF(true)
-  fsUtil.writeStrToFile(strAggrNonTFNoNoise, self.taAggrFilenames.strNonTFsNoNoise)
+  self:pri_saveAggregated_NonTF(true, self.taAggrFilenames.strNonTFsNoNoise)
 
 end

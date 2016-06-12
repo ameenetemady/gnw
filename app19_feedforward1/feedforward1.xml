@@ -105,9 +105,9 @@
         </listOfProducts>
         <kineticLaw>
           <listOfParameters>
-            <parameter id="max" name="max" value="0.028914419706514097" />
+            <parameter id="max" name="max" value="0.3" />
             <parameter id="deltaProtein" name="deltaProtein" value="0.016867577742562798" />
-            <parameter id="maxTranslation" name="maxTranslation" value="0.016867577742562798" />
+            <parameter id="maxTranslation" name="maxTranslation" value="0.3" />
             <parameter id="a_0" name="a_0" value="1.0" />
           </listOfParameters>
         </kineticLaw>

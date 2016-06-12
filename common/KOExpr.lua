@@ -60,8 +60,7 @@ function KOExpr:init()
   sbmlUtil.doInplaceGeneKnockOut(self.strExprXmlFilename, self.taKOGenes)
 
   -- generate multifactorial perturbations on TFs
-  local strPerts = sbmlUtil.getMultifactorialPerts(self.strExprXmlFilename, self.taExprParams)
-  fsUtil.writeStrToFile(strPerts, self.strPertFilename)
+  sbmlUtil.getAndSaveMultifactorialPerts(self.strExprXmlFilename, self.taExprParams, self.strPertFilename)
 end
 
 function KOExpr:run()

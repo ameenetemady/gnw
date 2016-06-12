@@ -55,7 +55,7 @@ do
     return taNet
   end
 
-  function sbmlUtil.getMultifactorialPerts(strXmlFilePath, taExprParams)
+  function sbmlUtil.getAndSaveMultifactorialPerts(strXmlFilePath, taExprParams, strFilename)
     local taNet = sbmlUtil.getNetFromSbml(strXmlFilePath)
     local taGenes = sbmlUtil.getGeneNames(strXmlFilePath)
 
@@ -89,10 +89,13 @@ do
     -- save
     local teAll = myUtil.getTensorFromTableOfTensors(taAll)
     teAll:mul(taExprParams.dMultiFactorialStep)
-    local strContent = myUtil.getCsvStringFrom2dTensor(teAll, "\t")
-    local strHeader = table.concat(taGenes, "\t")
 
-    return string.format("%s\n%s", strHeader, strContent)
+    local fHandle = assert(io.open(strFilename, "w+"))
+    local strHeader = table.concat(taGenes, "\t")
+    fHandle:write(strHeader .. "\n")
+    myUtil.saveCsvStringFrom2dTensorToFile(teAll, "\t", fHandle)
+    fHandle:close()
+
   end
 
   function sbmlUtil.doInplaceGeneKnockOut(strXmlFilename, taKOGenes)
