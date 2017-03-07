@@ -5,3 +5,4 @@
 * lua packages:
   * https://github.com/clementfarabet/lua---xml (install using "luarocks make".
   * https://github.com/ameenetemady/MyCommon (clone under same directory as gnw).
+* Gene Net Weaver: gnw-3.1.2b.jar
