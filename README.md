@@ -2,4 +2,6 @@
 
 ## Requirements
 1. lua 5.2
-2. lua packages: luaxml
+2. lua packages: 
+..* https://github.com/clementfarabet/lua---xml (install using "luarocks make"
+..* https://github.com/ameenetemady/MyCommon (clone under same directory as gnw)
