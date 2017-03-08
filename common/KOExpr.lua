@@ -2,8 +2,8 @@ require 'xml'
 local lfs = require 'lfs'
 local fsUtil = require('./fsUtil.lua')
 local sbmlUtil = require('./sbmlUtil.lua')
-local myUtil = myUtil or require('../../mygithub/MyCommon/util.lua')
-local dataLoad = dataLoad or require('../../mygithub/MyCommon/dataLoad.lua')
+local myUtil = myUtil or require('../../MyCommon/util.lua')
+local dataLoad = dataLoad or require('../../MyCommon/dataLoad.lua')
 
 local KOExpr = torch.class('KOExpr')
 

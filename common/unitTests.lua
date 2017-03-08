@@ -1,6 +1,6 @@
 require('./GnwNetPerturb.lua')
 require('./KOExprMgr.lua')
-require('../../mygithub/MyCommon/PermutationGenerator.lua')
+require('../../MyCommon/PermutationGenerator.lua')
 
 local sbmlUtil = require('./sbmlUtil.lua')
 local lfs = require 'lfs'

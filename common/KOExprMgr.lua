@@ -1,7 +1,7 @@
 require 'xml'
 require('./KOExpr.lua')
 
-local myUtil = myUtil or require('../../mygithub/MyCommon/util.lua')
+local myUtil = myUtil or require('../../MyCommon/util.lua')
 local sbmlUtil = sbmlUtil or require("./sbmlUtil.lua")
 local fsUtil = fsUtil or require("./fsUtil.lua")
 

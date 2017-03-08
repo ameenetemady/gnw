@@ -1,4 +1,4 @@
-local myUtil = myUtil or require('../../mygithub/MyCommon/util.lua')
+local myUtil = myUtil or require('../../MyCommon/util.lua')
 
 local sbmlUtil = {}
 

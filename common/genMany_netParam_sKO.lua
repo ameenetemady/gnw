@@ -3,7 +3,7 @@ local lfs = require 'lfs'
 local sbmlUtil = require('./sbmlUtil.lua')
 require('./GnwNetPerturb.lua')
 require('./KOExprMgr.lua')
-require('../../mygithub/MyCommon/PermutationGenerator.lua')
+require('../../MyCommon/PermutationGenerator.lua')
 
 function main(strNetMainFilename, nNets, taExprParams)
   --todo: assert file exists
