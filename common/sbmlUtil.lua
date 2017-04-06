@@ -3,14 +3,17 @@ local myUtil = myUtil or require('../../MyCommon/util.lua')
 local sbmlUtil = {}
 
 do
-  function sbmlUtil.genPerturbedNet(strNetMainFilename, seed)
+  function sbmlUtil.genPerturbedNet(strNetMainFilename, seed, isSkip)
 
     local settings = { baseDir = currDir, 
                        xmlFilename = strNetMainFilename}
 
     local pertNet = GnwNetPerturb.new(settings, seed)
     pertNet:init()
-    pertNet:randomize()
+
+		if not isSkip then
+	    pertNet:randomize()
+		end
 
     return pertNet.xmlFilename
   end

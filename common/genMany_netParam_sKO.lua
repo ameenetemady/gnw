@@ -7,9 +7,10 @@ require('../../MyCommon/PermutationGenerator.lua')
 
 function main(strNetMainFilename, nNets, taExprParams)
   --todo: assert file exists
+	local isSkipRandomize = false -- used for testing
 
   for seed=1, nNets do
-    local strNetCurrPerturbedFilename = sbmlUtil.genPerturbedNet(strNetMainFilename, seed)
+    local strNetCurrPerturbedFilename = sbmlUtil.genPerturbedNet(strNetMainFilename, seed, isSkipRandomize)
     local koExprMgr = KOExprMgr.new(strNetCurrPerturbedFilename, taExprParams)
     koExprMgr:init()
 

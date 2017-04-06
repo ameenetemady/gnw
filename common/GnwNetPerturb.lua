@@ -22,14 +22,15 @@ end
 function GnwNetPerturb:pri_fgetMinMax(strId)
   local prefix = string.sub(strId, 1, 2)
 
+  -- The following ranges worked well for app19_feedforward1
   if strId == "a_0" then
-    return false, 0.6, 1
+    return false, 0.0, 0.8
   elseif prefix == "a_" then
     return false, 0, 0.4 
   elseif prefix == "k_" then
-    return false, 0.4 , 1
+    return false, 10 , 15
   elseif prefix == "n_" then
-    return false, 1, 7
+    return false, 0.5, 3
   elseif strId == "max" then
     return false, 0.01, 0.5
   else

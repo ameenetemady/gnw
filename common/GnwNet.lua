@@ -14,10 +14,11 @@ end
 function GnwNet:pri_fgetMinMax(strId)
   local prefix = string.sub(strId, 1, 2)
 
+  -- The following ranges worked well for app19_feedforward1:
   if prefix == "a_" then
     return false, 0, 1
   elseif prefix == "k_" then
-    return false, 0, 1
+    return false, 0.9, 5
   elseif prefix == "n_" then
     return false, 1, 7
   else
