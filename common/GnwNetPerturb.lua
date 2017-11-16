@@ -10,12 +10,16 @@ function GnwNetPerturb:__init(settings, seed)
   self.netId = "d_" .. seed
   self.baseDir = string.format("%s/%s", settings.baseDir, self.netId)
   self.xmlFilename = string.format("%s/%s/%s", settings.baseDir, self.netId, settings.xmlFilename)
+  self.gnwPath = "../gnw-3.1.2b.jar"
 end
 
 function GnwNetPerturb:pri_genBase()
   lfs.mkdir(self.baseDir)
-
-  command = "cp " .. self.settings.xmlFilename .. " " .. self.xmlFilename
+  tsvFilePath = string.format("%s/%s.tsv", self.settings.baseDir, self.settings.xmlFilename:sub(1, -5))
+  
+   -- Convert .tsv file to .sbml
+  local command = string.format("java -jar %s --transform -c settings.txt --input-net %s --output-net-format=4 --output-path=%s",
+                                self.gnwPath, tsvFilePath, self.baseDir)
   os.execute(command)
 end
 

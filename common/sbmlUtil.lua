@@ -29,7 +29,7 @@ do
       end
     end
 
-    table.sort(taGenes)
+    --table.sort(taGenes) -- sorting causes issue since they are not sorted in sbml file and GNW imposes it's order accross the files
 
     return taGenes
   end
@@ -58,7 +58,7 @@ do
     return taNet
   end
 
-  function sbmlUtil.getAndSaveMultifactorialPerts(strXmlFilePath, taExprParams, strFilename)
+  function sbmlUtil.getAndSaveRandMultifactorialPerts(strXmlFilePath, nPerms, strFilename)
     local taNet = sbmlUtil.getNetFromSbml(strXmlFilePath)
     local taGenes = sbmlUtil.getGeneNames(strXmlFilePath)
 
@@ -66,7 +66,47 @@ do
     local nGenes = table.getn(taGenes)
     local taPertMins = {}
     local taPertMaxs = {}
-    local nLevels = 1/(taExprParams.dMultiFactorialStep)
+
+    -- set permutation boundaries
+    for i=1, nGenes do
+      local strGene = taGenes[i]
+      if taNet[strGene] == "TF" then
+        taPertMins[i] = -1
+        taPertMaxs[i] = 1
+      else
+        taPertMins[i] = 0
+        taPertMaxs[i] = 0
+      end
+    end
+    
+    -- permute
+    local permutGen = RPermutationGenerator(taPertMins, taPertMaxs, nPerms)
+    local tePerm = permutGen:getNext()
+    local taAll = {}
+    while tePerm ~= nil do
+     table.insert(taAll, tePerm:clone())
+     tePerm = permutGen:getNext()
+    end
+
+    -- save
+    local teAll = myUtil.getTensorFromTableOfTensors(taAll)
+
+    local fHandle = assert(io.open(strFilename, "w+"))
+    local strHeader = table.concat(taGenes, "\t")
+    fHandle:write(strHeader .. "\n")
+    myUtil.saveCsvStringFrom2dTensorToFile(teAll, "\t", fHandle)
+    fHandle:close()
+  end
+
+  function sbmlUtil.getAndSaveMultifactorialPerts(strXmlFilePath, dMultiFactorialStep, strFilename)
+    local taNet = sbmlUtil.getNetFromSbml(strXmlFilePath)
+    local taGenes = sbmlUtil.getGeneNames(strXmlFilePath)
+
+    -- initialize
+    local nGenes = table.getn(taGenes)
+    local taPertMins = {}
+    local taPertMaxs = {}
+    local nLevels = 1/(dMultiFactorialStep)
 
     -- set permutation boundaries
     for i=1, nGenes do
@@ -91,7 +131,7 @@ do
 
     -- save
     local teAll = myUtil.getTensorFromTableOfTensors(taAll)
-    teAll:mul(taExprParams.dMultiFactorialStep)
+    teAll:mul(dMultiFactorialStep)
 
     local fHandle = assert(io.open(strFilename, "w+"))
     local strHeader = table.concat(taGenes, "\t")
