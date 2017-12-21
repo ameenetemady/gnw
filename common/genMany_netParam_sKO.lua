@@ -1,4 +1,4 @@
-require 'xml'
+local xml = require 'LuaXML'
 local lfs = require 'lfs'
 local sbmlUtil = require('./sbmlUtil.lua')
 require('./GnwNetPerturb.lua')

@@ -1,3 +1,4 @@
+local xml = require 'LuaXML'
 local myUtil = myUtil or require('../../MyCommon/util.lua')
 
 local sbmlUtil = {}
@@ -63,7 +64,7 @@ do
     local taGenes = sbmlUtil.getGeneNames(strXmlFilePath)
 
     -- initialize
-    local nGenes = table.getn(taGenes)
+    local nGenes = #taGenes
     local taPertMins = {}
     local taPertMaxs = {}
 
