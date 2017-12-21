@@ -1,4 +1,4 @@
-require 'xml'
+local xml = require 'LuaXML'
 require('./KOExpr.lua')
 
 local myUtil = myUtil or require('../../MyCommon/util.lua')
