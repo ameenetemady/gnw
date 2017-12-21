@@ -1,3 +1,7 @@
 *.tsv
 app*_*/d_*/*
 trash/
+*.jar
+*/err.txt
+*/out.txt
+orig/
