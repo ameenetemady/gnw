@@ -10,7 +10,8 @@ function GnwNetPerturb:__init(settings, seed)
   self.netId = "d_" .. seed
   self.baseDir = string.format("%s/%s", settings.baseDir, self.netId)
   self.xmlFilename = string.format("%s/%s/%s", settings.baseDir, self.netId, settings.xmlFilename)
-  self.gnwPath = "../gnw-3.1.2b.jar"
+  local current_path = string.sub(debug.getinfo(1).source, 2, string.len("/GnwNetPerturb.lua") * -1) --ToDo: this is not good, should use envirnoment variable instead
+  self.gnwPath = current_path .. "../gnw-3.1.2b.jar"
 end
 
 function GnwNetPerturb:pri_genBase()
